@@ -177,10 +177,11 @@ async function handlePullRequest(data) {
 }
 
 async function run() {
-	console.log("qwe");
-
   if (head_commit && head_commit.message) {
     handleHeadCommit(head_commit)
+  }
+  else if (pull_request && pull_request.title) {
+    handlePullRequest(pull_request)
   }
   else if (pull_request && pull_request.title) {
     handlePullRequest(pull_request)

@@ -9235,13 +9235,60 @@ async function handlePullRequest(data) {
   });
 }
 
+async function createCardAndAddToList(board, cardName, list) {
+	console.log(`createCardAndAddToList(${board}, ${cardName}, ${list})`);
+	let listId = await getListOnBoard(board, list);
+	if (listId && listId.length > 0) {
+	  let url = `https://api.trello.com/1/cards/`;
+	  return await axios.post(url, {
+		key: trelloApiKey,
+		token: trelloAuthToken, 
+		name: cardName, 
+		idList: listId
+	  }).then(response => {
+		return response;
+	  }).catch(error => {
+		console.error(url, `Error ${error.response.status} ${error.response.statusText}`);
+		return null;
+	  });
+	}       
+	return null;
+  }
+
+
+  async function handleNewPullRequest(data) {
+	console.log("handleNewPullRequest", data);
+	let url = data.html_url || data.url;
+  let branch = data.head.ref;
+	let user = data.user.name;
+  
+	  if (trelloListNamePullRequestOpen && trelloListNamePullRequestOpen.length > 0) {
+		  await createCardAndAddToList(trelloBoardId, branch, trelloListNamePullRequestOpen).then(async response => {
+			  console.log("Card created: ", response);
+		  });
+	  }
+  
+  //   let card = await getCardOnBoard(trelloBoardId, cardNumber);
+  //     if (card && card.length > 0) {
+  // 		if (trelloCardAction && trelloCardAction.toLowerCase() == 'attachment') {
+  // 			await addAttachmentToCard(card, url);
+  // 		}
+  // 		else if (trelloCardAction && trelloCardAction.toLowerCase() == 'comment') {
+  // 			await addCommentToCard(card, user, message, url);
+  // 		}
+  //     }
+  }
+
 async function run() {
-  if (head_commit && head_commit.message) {
-    handleHeadCommit(head_commit)
-  }
-  else if (pull_request && pull_request.title) {
-    handlePullRequest(pull_request)
-  }
+	if (pull_request && pull_request.title) {
+	handleNewPullRequest(pull_request)
+	}
+//   if (head_commit && head_commit.message) {
+//     handleHeadCommit(head_commit)
+//   }
+//   else if (pull_request && pull_request.title) {
+//     handlePullRequest(pull_request)
+//   }
 };
 
 run()
