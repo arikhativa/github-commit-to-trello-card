@@ -221,15 +221,16 @@ async function handleNewPullRequest(data) {
 }
 
 async function run() {
+	console.log("run: ", pull_request.state);
   if (head_commit && head_commit.message) {
     handleHeadCommit(head_commit)
   }
   else if (pull_request && pull_request.title && pull_request.state && pull_request.state == "open") {
     handleNewPullRequest(pull_request)
   }
-  else if (pull_request && pull_request.title) {
-    handlePullRequest(pull_request)
-  }
+//   else if (pull_request && pull_request.title) {
+//     handlePullRequest(pull_request)
+//   }
 };
 
 run()
