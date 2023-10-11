@@ -99,6 +99,27 @@ async function addCommentToCard(card, user, message, link) {
   });
 }
 
+
+async function createCardAndAddToList(board, cardName, list) {
+  console.log(`createCardAndAddToList(${board}, ${cardName}, ${list})`);
+  let listId = await getListOnBoard(board, list);
+  if (listId && listId.length > 0) {
+    let url = `https://api.trello.com/1/cards/`;
+    return await axios.post(url, {
+      key: trelloApiKey,
+      token: trelloAuthToken, 
+      name: cardName, 
+      idList: listId
+    }).then(response => {
+      return response && response.status == 200;
+    }).catch(error => {
+      console.error(url, `Error ${error.response.status} ${error.response.statusText}`);
+      return null;
+    });
+  }       
+  return null;
+}
+
 async function moveCardToList(board, card, list) {
   console.log(`moveCardToList(${board}, ${card}, ${list})`);
   let listId = await getListOnBoard(board, list);
@@ -164,7 +185,7 @@ async function handlePullRequest(data) {
 			}
 		}
       if (data.state == "open" && trelloListNamePullRequestOpen && trelloListNamePullRequestOpen.length > 0) {
-        await moveCardToList(trelloBoardId, card, trelloListNamePullRequestOpen);
+        await createCardAndAddToList(trelloBoardId, branch, trelloListNamePullRequestOpen);
       }
       else if (data.state == "closed" && trelloListNamePullRequestClosed && trelloListNamePullRequestClosed.length > 0) {
         await moveCardToList(trelloBoardId, card, trelloListNamePullRequestClosed);
