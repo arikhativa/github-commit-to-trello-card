@@ -164,38 +164,38 @@ async function handleHeadCommit(data) {
   });
 }
 
-async function handlePullRequest(data) {
-  console.log("handlePullRequest", data);
-  let url = data.html_url || data.url;
-  let message = data.title;
-  let user = data.user.name;
-  let branch = data.head.ref;
-  let cardsNumbers = getAllCardNumbers(message, branch);
-  cardsNumbers.forEach(async cardNumber => {
+// async function handlePullRequest(data) {
+//   console.log("handlePullRequest", data);
+//   let url = data.html_url || data.url;
+//   let message = data.title;
+//   let user = data.user.name;
+//   let branch = data.head.ref;
+//   let cardsNumbers = getAllCardNumbers(message, branch);
+//   cardsNumbers.forEach(async cardNumber => {
 
-  let card = await getCardOnBoard(trelloBoardId, cardNumber);
-    if (card && card.length > 0) {
-		if (data.state == "open")
-		{
-			if (trelloCardAction && trelloCardAction.toLowerCase() == 'attachment') {
-			  await addAttachmentToCard(card, url);
-			}
-			else if (trelloCardAction && trelloCardAction.toLowerCase() == 'comment') {
-			  await addCommentToCard(card, user, message, url);
-			}
-		}
-      if (data.state == "open" && trelloListNamePullRequestOpen && trelloListNamePullRequestOpen.length > 0) {
-        await moveCardToList(trelloBoardId, card, trelloListNamePullRequestOpen);
-      }
-      else if (data.state == "closed" && trelloListNamePullRequestClosed && trelloListNamePullRequestClosed.length > 0) {
-        await moveCardToList(trelloBoardId, card, trelloListNamePullRequestClosed);
-      }
-      else if (data.state == "synchronize" && trelloListNamePullRequestClosed && trelloListNamePullRequestClosed.length > 0) {
-        await moveCardToList(trelloBoardId, card, trelloListNameCommit);
-      }
-    }
-  });
-}
+//   let card = await getCardOnBoard(trelloBoardId, cardNumber);
+//     if (card && card.length > 0) {
+// 		if (data.state == "open")
+// 		{
+// 			if (trelloCardAction && trelloCardAction.toLowerCase() == 'attachment') {
+// 			  await addAttachmentToCard(card, url);
+// 			}
+// 			else if (trelloCardAction && trelloCardAction.toLowerCase() == 'comment') {
+// 			  await addCommentToCard(card, user, message, url);
+// 			}
+// 		}
+//       if (data.state == "open" && trelloListNamePullRequestOpen && trelloListNamePullRequestOpen.length > 0) {
+//         await moveCardToList(trelloBoardId, card, trelloListNamePullRequestOpen);
+//       }
+//       else if (data.state == "closed" && trelloListNamePullRequestClosed && trelloListNamePullRequestClosed.length > 0) {
+//         await moveCardToList(trelloBoardId, card, trelloListNamePullRequestClosed);
+//       }
+//       else if (data.state == "synchronize" && trelloListNamePullRequestClosed && trelloListNamePullRequestClosed.length > 0) {
+//         await moveCardToList(trelloBoardId, card, trelloListNameCommit);
+//       }
+//     }
+//   });
+// }
 
 async function handleNewPullRequest(data) {
   console.log("handleNewPullRequest", data);
@@ -222,12 +222,15 @@ async function handleNewPullRequest(data) {
 
 async function run() {
 	console.log("run: ", pull_request.state);
-  if (head_commit && head_commit.message) {
-    handleHeadCommit(head_commit)
-  }
-  else if (pull_request && pull_request.title && pull_request.state && pull_request.state == "open") {
+//   if (head_commit && head_commit.message) {
+//     handleHeadCommit(head_commit)
+//   }
+   if (pull_request && pull_request.title) {
     handleNewPullRequest(pull_request)
   }
+//   else if (pull_request && pull_request.title && pull_request.state && pull_request.state == "open") {
+//     handleNewPullRequest(pull_request)
+//   }
 //   else if (pull_request && pull_request.title) {
 //     handlePullRequest(pull_request)
 //   }
