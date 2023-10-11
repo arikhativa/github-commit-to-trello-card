@@ -9083,7 +9083,7 @@ const trelloListNamePullRequestClosed = _actions_core__WEBPACK_IMPORTED_MODULE_1
 function getCardNumbers(message) {
   console.log(`getCardNumber(${message})`);
   console.log(`Trello ID match pattern ${trelloCardIdPattern}`)
-  let ids = message && message.length > 0 ? message.replace(regexPullRequest, "").match(new RegExp(`${trelloCardIdPattern}\\d+`, 'g')) : [];
+  let ids = message && message.length > 0 ? message.replace(regexPullRequest, "").match(new RegExp(`${trelloCardIdPattern}`, 'g')) : [];
   return ids && ids.length > 0 ? ids.map(x => x.replace(trelloCardIdPattern, '')) : null;
 }
 
