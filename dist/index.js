@@ -9240,7 +9240,7 @@ async function createCardAndAddToList(board, cardName, list) {
 	let listId = await getListOnBoard(board, list);
 	if (listId && listId.length > 0) {
 	  let url = `https://api.trello.com/1/cards/`;
-	  return await axios.post(url, {
+	  return await axios__WEBPACK_IMPORTED_MODULE_0__.post(url, {
 		key: trelloApiKey,
 		token: trelloAuthToken, 
 		name: cardName, 
@@ -9254,7 +9254,6 @@ async function createCardAndAddToList(board, cardName, list) {
 	}       
 	return null;
   }
-
 
   async function handleNewPullRequest(data) {
 	console.log("handleNewPullRequest", data);
