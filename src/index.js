@@ -16,8 +16,8 @@ const trelloListNamePullRequestOpen = core.getInput('trello-list-name-pr-open', 
 const trelloListNamePullRequestClosed = core.getInput('trello-list-name-pr-closed', { required: false });
 
 function getCardNumbers(message) {
-  console.log(`getCardNumber(${message})`);
-  console.log(`Trello ID match pattern ${trelloCardIdPattern}`)
+  console.log(`a getCardNumber(${message})`);
+  console.log(`a Trello ID match pattern ${trelloCardIdPattern}`)
   let ids = message && message.length > 0 ? message.replace(regexPullRequest, "").match(new RegExp(`${trelloCardIdPattern}`, 'g')) : [];
   return ids && ids.length > 0 ? ids.map(x => x.replace(trelloCardIdPattern, '')) : null;
 }
@@ -32,10 +32,10 @@ function getAllCardNumbers(message, branch) {
 }
 
 async function getCardOnBoard(board, card) {
-  console.log(`getCardOnBoard(${board}, ${card})`);
+  console.log(`a getCardOnBoard(${board}, ${card})`);
   if (card && card.length > 0) {
     let url = `https://trello.com/1/boards/${board}/cards/${card}`;
-    console.log("Url is ", url);
+    console.log("a Url is ", url);
     return await axios.get(url, { 
       params: { 
         key: trelloApiKey, 
@@ -53,7 +53,7 @@ async function getCardOnBoard(board, card) {
 }
 
 async function getListOnBoard(board, list) {
-  console.log(`getListOnBoard(${board}, ${list})`);
+  console.log(`a getListOnBoard(${board}, ${list})`);
   let url = `https://trello.com/1/boards/${board}/lists`
   return await axios.get(url, { 
     params: { 
@@ -70,7 +70,7 @@ async function getListOnBoard(board, list) {
 }
 
 async function addAttachmentToCard(card, link) {
-  console.log(`addAttachmentToCard(${card}, ${link})`);
+  console.log(`a addAttachmentToCard(${card}, ${link})`);
   let url = `https://api.trello.com/1/cards/${card}/attachments`;
   return await axios.post(url, {
     key: trelloApiKey,
@@ -85,7 +85,7 @@ async function addAttachmentToCard(card, link) {
 }
 
 async function addCommentToCard(card, user, message, link) {
-  console.log(`addCommentToCard(${card}, ${user}, ${message}, ${link})`);
+  console.log(`a addCommentToCard(${card}, ${user}, ${message}, ${link})`);
   let url = `https://api.trello.com/1/cards/${card}/actions/comments`;
   return await axios.post(url, {
     key: trelloApiKey,
@@ -100,7 +100,7 @@ async function addCommentToCard(card, user, message, link) {
 }
 
 async function moveCardToList(board, card, list) {
-  console.log(`moveCardToList(${board}, ${card}, ${list})`);
+  console.log(`a moveCardToList(${board}, ${card}, ${list})`);
   let listId = await getListOnBoard(board, list);
   if (listId && listId.length > 0) {
     let url = `https://api.trello.com/1/cards/${card}`;
@@ -119,7 +119,7 @@ async function moveCardToList(board, card, list) {
 }
 
 async function handleHeadCommit(data) {
-  console.log("handleHeadCommit", data);
+  console.log("a handleHeadCommit", data);
   let url = data.url;
   let message = data.message;
   let user = data.author.name;
@@ -144,7 +144,7 @@ async function handleHeadCommit(data) {
 }
 
 async function handlePullRequest(data) {
-  console.log("handlePullRequest", data);
+  console.log("A handlePullRequest", data);
   let url = data.html_url || data.url;
   let message = data.title;
   let user = data.user.name;
@@ -177,6 +177,7 @@ async function handlePullRequest(data) {
 }
 
 async function run() {
+
   if (head_commit && head_commit.message) {
     handleHeadCommit(head_commit)
   }
