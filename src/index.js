@@ -111,7 +111,7 @@ async function createCardAndAddToList(board, cardName, list) {
       name: cardName, 
       idList: listId
     }).then(response => {
-      return response && response.status == 200;
+      return response;
     }).catch(error => {
       console.error(url, `Error ${error.response.status} ${error.response.statusText}`);
       return null;
@@ -185,7 +185,7 @@ async function handlePullRequest(data) {
 			}
 		}
       if (data.state == "open" && trelloListNamePullRequestOpen && trelloListNamePullRequestOpen.length > 0) {
-        await createCardAndAddToList(trelloBoardId, branch, trelloListNamePullRequestOpen);
+        await moveCardToList(trelloBoardId, card, trelloListNamePullRequestOpen);
       }
       else if (data.state == "closed" && trelloListNamePullRequestClosed && trelloListNamePullRequestClosed.length > 0) {
         await moveCardToList(trelloBoardId, card, trelloListNamePullRequestClosed);
@@ -197,9 +197,35 @@ async function handlePullRequest(data) {
   });
 }
 
+async function handleNewPullRequest(data) {
+  console.log("handleNewPullRequest", data);
+  let url = data.html_url || data.url;
+  let message = data.title;
+  let user = data.user.name;
+	
+	if (trelloListNamePullRequestOpen && trelloListNamePullRequestOpen.length > 0) {
+		await createCardAndAddToList(trelloBoardId, message, trelloListNamePullRequestOpen).then(async response => {
+			console.log("Card created: ", response);
+		});
+	}
+
+//   let card = await getCardOnBoard(trelloBoardId, cardNumber);
+//     if (card && card.length > 0) {
+// 		if (trelloCardAction && trelloCardAction.toLowerCase() == 'attachment') {
+// 			await addAttachmentToCard(card, url);
+// 		}
+// 		else if (trelloCardAction && trelloCardAction.toLowerCase() == 'comment') {
+// 			await addCommentToCard(card, user, message, url);
+// 		}
+//     }
+}
+
 async function run() {
   if (head_commit && head_commit.message) {
     handleHeadCommit(head_commit)
+  }
+  else if (pull_request && pull_request.title && pull_request.state && pull_request.state == "open") {
+    handleNewPullRequest(pull_request)
   }
   else if (pull_request && pull_request.title) {
     handlePullRequest(pull_request)
