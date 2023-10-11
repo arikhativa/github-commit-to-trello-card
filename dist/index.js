@@ -9264,6 +9264,7 @@ async function createCardAndAddToList(board, cardName, list) {
 	  if (trelloListNamePullRequestOpen && trelloListNamePullRequestOpen.length > 0) {
 		  await createCardAndAddToList(trelloBoardId, branch, trelloListNamePullRequestOpen).then(async response => {
 			  console.log("Card created: ", response);
+			  
 		  });
 	  }
   
